@@ -54,6 +54,7 @@ class LibraryViewModel extends ChangeNotifier {
                 artistGenre: artist.genre,
                 duration: song.duration,
                 imageUrl: song.imageUrl,
+                like: song.like
               ),
             );
             break;
@@ -69,6 +70,27 @@ class LibraryViewModel extends ChangeNotifier {
      notifyListeners();
 
   }
+
+  Future<void> likeSong(RichSong song) async {
+  try {
+    await songRepository.likeSong(song.id, song.like);
+
+    if (songsValue.state == AsyncValueState.success) {
+      final updatedSongs = songsValue.data!.map((s) {
+        if (s.id == song.id) {
+          s.like+=1;
+          return s; 
+        }
+        return s;
+      }).toList();
+
+      songsValue = AsyncValue.success(updatedSongs);
+      notifyListeners();
+    }
+  } catch (e) {
+    print("Failed to like song: $e");
+  }
+}
 
   bool isSongPlaying(Song song) => playerState.currentSong?.id == song.id;
 

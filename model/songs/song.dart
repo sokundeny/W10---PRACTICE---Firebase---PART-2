@@ -4,6 +4,7 @@ class Song {
   final String artist;
   final Duration duration;
   final String imageUrl;
+  int like;
 
   Song({
     required this.id,
@@ -11,6 +12,7 @@ class Song {
     required this.artist,
     required this.duration,
     required this.imageUrl,
+    required this.like
   });
 
   @override

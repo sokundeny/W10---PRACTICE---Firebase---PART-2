@@ -12,6 +12,7 @@ class RichSong extends Song{
     required super.artist, 
     required super.duration, 
     required super.imageUrl,
+    required super.like,
   });
 
   Song toSong() {
@@ -21,6 +22,7 @@ class RichSong extends Song{
       artist: artist,
       duration: duration,
       imageUrl: imageUrl,
+      like: like
     );
   }
 }
