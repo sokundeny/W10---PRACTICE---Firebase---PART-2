@@ -1,0 +1,38 @@
+import 'package:my_app/data/repositories/artists/artist_repository.dart';
+import 'package:my_app/model/artists/artist.dart';
+import 'package:flutter/material.dart';
+import '../../../utils/async_value.dart';
+
+class ArtistViewModel extends ChangeNotifier {
+  final ArtistRepository artistRepository;
+
+  AsyncValue<List<Artist>> artistsValue = AsyncValue.loading();
+
+  ArtistViewModel({required this.artistRepository}) {
+
+    // init
+    _init();
+  }
+
+
+  void _init() async {
+    fetchSong();
+  }
+
+  void fetchSong() async {
+    // 1- Loading state
+    artistsValue = AsyncValue.loading();
+    notifyListeners();
+
+    try {
+      // 2- Fetch is successfull
+      List<Artist> artists = await artistRepository.fetchArtist();
+      artistsValue = AsyncValue.success(artists);
+    } catch (e) {
+      // 3- Fetch is unsucessfull
+      artistsValue = AsyncValue.error(e);
+    }
+    notifyListeners();
+  }
+
+}
