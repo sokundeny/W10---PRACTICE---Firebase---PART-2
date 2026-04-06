@@ -30,15 +30,16 @@ class LibraryViewModel extends ChangeNotifier {
     fetchSong();
   }
 
-  void fetchSong() async {
+  void fetchSong({bool forceFetch = false}) async {
     // 1- Loading state
     songsValue = AsyncValue.loading();
     notifyListeners();
 
     try {
       // 2- Fetch is successfull
-      final songs = await songRepository.fetchSongs();
-      final artists = await artistRepo.fetchArtist();
+    final songs = await songRepository.fetchSongs(forceFetch: forceFetch);
+    final artists = await artistRepo.fetchArtist(forceFetch: forceFetch);
+
 
       // 2- Join using nested loop
       final richSongs = <RichSong>[];

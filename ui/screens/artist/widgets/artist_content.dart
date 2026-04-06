@@ -31,12 +31,17 @@ class ArtistContent extends StatelessWidget {
 
       case AsyncValueState.success:
         List<Artist> artists = asyncValue.data!;
-        content = ListView.builder(
+        content = RefreshIndicator(
+        onRefresh: () async {
+          mv.fetchArtist(forceFetch: true);
+        },
+        child: ListView.builder(
           itemCount: artists.length,
           itemBuilder: (context, index) => ArtistTile(
             artist: artists[index],
           ),
-        );
+        ),
+      );
     }
 
     return Padding(

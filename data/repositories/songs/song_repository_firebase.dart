@@ -8,22 +8,31 @@ import 'song_repository.dart';
 
 class SongRepositoryFirebase extends SongRepository {
   final Uri songsUri = Uri.https('the-best-by-the-best-default-rtdb.asia-southeast1.firebasedatabase.app', '/songs.json');
+  List<Song>? _cachedSongs;
 
   @override
-  Future<List<Song>> fetchSongs() async {
+  Future<List<Song>> fetchSongs({bool forceFetch = false}) async {
+
+    if (!forceFetch && _cachedSongs != null) {
+      return _cachedSongs!;
+    }
+
     final http.Response response = await http.get(songsUri);
 
     if (response.statusCode == 200) {
       // 1 - Send the retrieved list of songs
       final Map<String, dynamic> songJson = Map<String, dynamic>.from(json.decode(response.body));
-      return songJson.entries
+      
+      final songs =songJson.entries
           .map(
             (entry) => SongDto.fromJson(
               entry.key,
               Map<String, dynamic>.from(entry.value),
             ),
           )
-          .toList();
+          .toList();  
+      _cachedSongs = songs;
+      return songs;
     } else {
       // 2- Throw expcetion if any issue
       throw Exception('Failed to load posts');
